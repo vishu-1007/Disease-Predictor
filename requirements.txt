@@ -1,0 +1,8 @@
+flask
+flask-login
+gunicorn
+tensorflow
+numpy
+pandas
+joblib
+pillow

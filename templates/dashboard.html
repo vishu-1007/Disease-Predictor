@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1 class="mt-3">Welcome, {{ current_user.id }}</h1>
+        <p>Select a disease for diagnosis:</p>
+        
+        <form id="predictForm" action="/predict" method="POST" class="mt-3">
+            <label for="disease">Choose Disease:</label>
+            <select class="form-control" id="disease" name="disease">
+                <option value="diabetes">Diabetes</option>
+                <option value="breast_cancer">Breast Cancer</option>
+                <option value="heart">Heart Disease</option>
+                <option value="kidney">Kidney Disease</option>
+                <option value="liver">Liver Disease</option>
+            </select>
+            
+            <label class="mt-3">Enter Medical Data (comma-separated):</label>
+            <input type="text" class="form-control" name="features" required>
+            
+            <button type="submit" class="btn btn-primary mt-3 w-100">Predict</button>
+        </form>
+
+        <h2 class="mt-5">Upload an Image for Malaria or Pneumonia Detection</h2>
+        <form id="imageUploadForm" enctype="multipart/form-data" class="mt-3">
+            <label for="image">Upload Image:</label>
+            <input type="file" class="form-control" id="image" name="image" required>
+            
+            <button type="submit" class="btn btn-success mt-3 w-100">Upload & Predict</button>
+        </form>
+    </div>
+</body>
+</html>

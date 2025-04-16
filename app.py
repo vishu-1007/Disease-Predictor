@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, request, jsonify
 import joblib
 import tensorflow as tf
 import numpy as np
@@ -8,20 +7,6 @@ from PIL import Image
 
 # Initialize Flask App
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
-
-# Initialize Login Manager
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-# Create user class
-class User(UserMixin):
-    def __init__(self, id):
-        self.id = id
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User(user_id)
 
 # Load Machine Learning Models
 models = {
@@ -40,17 +25,7 @@ models["pneumonia"] = tf.keras.models.load_model("pneumonia.h5")
 def index():
     return render_template('index.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        user_id = request.form['username']
-        user = User(user_id)
-        login_user(user)
-        return redirect(url_for('dashboard'))
-    return render_template('login.html')
-
 @app.route('/dashboard')
-@login_required
 def dashboard():
     return render_template('dashboard.html')
 
@@ -63,15 +38,15 @@ def predict():
 
         if disease not in models:
             return jsonify({"error": "Invalid disease type"}), 400
-        
+
         model = models[disease]
-        
+
         if disease in ["malaria", "pneumonia"]:
             input_features = np.expand_dims(input_features, axis=-1)
-        
+
         prediction = model.predict(input_features)
         result = int(prediction[0] > 0.5) if disease in ["malaria", "pneumonia"] else int(prediction[0])
-        
+
         return jsonify({"disease": disease, "prediction": result})
     except:
         return jsonify({"error": "Invalid input data"}), 400
